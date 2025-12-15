@@ -160,13 +160,13 @@ jobs:
 
       - name: Start services with docker-compose
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 30
 
       - name: Check services health
         run: |
-          docker-compose ps
-          docker-compose logs
+          docker compose ps
+          docker compose logs
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -185,4 +185,4 @@ jobs:
 
       - name: Stop services
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
