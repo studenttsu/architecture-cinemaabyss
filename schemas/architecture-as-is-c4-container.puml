@@ -1,0 +1,59 @@
+@startuml architecture-as-is-c4-container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма контейнеров C4 - AS-IS архитектура системы "Кинобездна"
+
+Person(user, "Пользователь", "Клиент системы потокового видео")
+Person(admin, "Администратор", "Управляет контентом и пользователями")
+
+System_Boundary(cinemaabyss, "CinemaAbyss") {
+    Container(monolith, "Monolith Application", "Go", "Монолитное приложение, содержащее всю бизнес-логику системы")
+    
+    ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL 14", "Хранит данные пользователей, фильмов, подписок и платежей")
+}
+
+System_Ext(payment_gateway, "Payment Gateway", "Внешний платежный шлюз")
+System_Ext(cdn, "CDN", "Content Delivery Network для доставки видео")
+System_Ext(email_service, "Email Service", "Сервис отправки email уведомлений")
+
+Rel(user, monolith, "Использует", "HTTPS/REST")
+Rel(admin, monolith, "Управляет", "HTTPS/REST")
+
+Rel(monolith, postgres, "Читает/пишет данные", "SQL/TCP")
+Rel(monolith, payment_gateway, "Обрабатывает платежи", "HTTPS/REST")
+Rel(monolith, cdn, "Получает видео контент", "HTTPS")
+Rel(monolith, email_service, "Отправляет уведомления", "SMTP/API")
+
+note right of monolith
+  **Монолитная архитектура**
+  
+  Все функции в одном приложении:
+  - Управление пользователями
+  - Каталог фильмов
+  - Подписки
+  - Платежи
+  - Рекомендации
+  - Стриминг
+  
+  **Проблемы:**
+  - Сложность масштабирования
+  - Тесная связанность компонентов
+  - Долгий цикл разработки
+  - Единая точка отказа
+end note
+
+note right of postgres
+  **Единая база данных**
+  
+  Все данные в одной БД:
+  - users
+  - movies
+  - subscriptions
+  - payments
+  - recommendations
+  - viewing_history
+end note
+
+@enduml

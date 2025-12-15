@@ -2,11 +2,9 @@
 
 # Задание 1
 
-1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
-Результат представьте в виде контейнерной диаграммы в нотации С4.
-Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
-
+[As-Is архитектура - диаграмма контейнеров C4](schemas/architecture-as-is-c4-container.puml)
+[To-Be архитектура - диаграмма контейнеров C4](schemas/architecture-to-be-c4-container.puml)
+    
 # Задание 2
 
 ### 1. Proxy
@@ -40,10 +38,14 @@
 ```
 
 - После реализации запустите postman тесты - они все должны быть зеленые (кроме events).
+  ![postman tests](/screenshots/postman-tests.png)
+
 - Отправьте запросы к API Gateway:
    ```bash
    curl http://localhost:8000/api/movies
    ```
+  ![movies](/screenshots/movies.png)
+
 - Протестируйте постепенный переход, изменив переменную окружения MOVIES_MIGRATION_PERCENT в файле docker-compose.yml.
 
 
@@ -56,8 +58,11 @@
     - Реализуйте простой API, при вызове которого будут создаваться события User/Payment/Movie и обрабатываться внутри сервиса с записью в лог
     - Добавьте в docker-compose новый сервис, kafka там уже есть
 
-Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
-Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090 
+Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman
+![postman tests local](/screenshots/postman-tests-local.png)
+
+Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090
+![kafka topics](/screenshots/kafka-topics.png)
 
 # Задание 3
 
@@ -274,6 +279,8 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
+![movies on host](/screenshots/movies-on-host.png)
+![events service](/screenshots/events-service-logs.png)
 
 
 # Задание 4
@@ -349,6 +356,9 @@ minikube tunnel
 Потом вызовите 
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
+
+![pods](/screenshots/kubernetes-pods.png)
+![movies on host](/screenshots/movies-on-host.png)
 
 ## Удаляем все
 
