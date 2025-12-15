@@ -166,12 +166,11 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
   hosts:
     - host: cinemaabyss.example.com
       paths:
-        - path: /()(.*)
-          pathType: ImplementationSpecific
+        - path: /
+          pathType: Prefix
           service: proxy-service
           port: 80
 
