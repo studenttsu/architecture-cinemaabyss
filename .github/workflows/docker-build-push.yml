@@ -173,15 +173,14 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install Newman
+      - name: Build test container
         run: |
           cd tests/postman
-          npm install
+          docker build -t cinemaabyss-api-tests .
 
       - name: Run API tests
         run: |
-          cd tests/postman
-          npm run test:local
+          docker run --network=cinemaabyss-network cinemaabyss-api-tests --environment docker
 
       - name: Stop services
         if: always()
