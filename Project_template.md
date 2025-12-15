@@ -38,10 +38,14 @@
 ```
 
 - После реализации запустите postman тесты - они все должны быть зеленые (кроме events).
+  ![postman tests](/screenshots/postman-tests.png)
+
 - Отправьте запросы к API Gateway:
    ```bash
    curl http://localhost:8000/api/movies
    ```
+  ![movies](/screenshots/movies.png)
+
 - Протестируйте постепенный переход, изменив переменную окружения MOVIES_MIGRATION_PERCENT в файле docker-compose.yml.
 
 
@@ -54,8 +58,11 @@
     - Реализуйте простой API, при вызове которого будут создаваться события User/Payment/Movie и обрабатываться внутри сервиса с записью в лог
     - Добавьте в docker-compose новый сервис, kafka там уже есть
 
-Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
-Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090 
+Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman
+![postman tests local](/screenshots/postman-tests-local.png)
+
+Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090
+![kafka topics](/screenshots/kafka-topics.png)
 
 # Задание 3
 
