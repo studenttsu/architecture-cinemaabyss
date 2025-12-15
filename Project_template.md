@@ -2,8 +2,9 @@
 
 # Задание 1
 
+[As-Is архитектура - диаграмма контейнеров C4](schemas/architecture-as-is-c4-container.puml)
 [To-Be архитектура - диаграмма контейнеров C4](schemas/architecture-to-be-c4-container.puml)
-
+    
 # Задание 2
 
 ### 1. Proxy
