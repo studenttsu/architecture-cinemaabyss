@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogeJCQkiYXV0aCI6ICJaR0W10aFVXbFZSbTVaKCSJmZWF0dXJlcyI6IHsKCQkiaG9va3MiOiAidHJ1ZSIKCX0KfQ==
+  dockerconfigjson: eyJhdXRocyI6eyJnaGNyLmlvIjp7fX19
 # Database configuration
 database:
   host: postgres
@@ -25,7 +25,7 @@ database:
       cpu: 500m
       memory: 512Mi
   persistence:
-    enabled: true
+    enabled: false
     size: 10Gi
     accessMode: ReadWriteOnce
 
@@ -125,7 +125,7 @@ kafka:
       cpu: 200m
       memory: 512Mi
   persistence:
-    enabled: true
+    enabled: false
     size: 5Gi
     accessMode: ReadWriteOnce
   topics:
@@ -155,7 +155,7 @@ zookeeper:
       cpu: 100m
       memory: 256Mi
   persistence:
-    enabled: true
+    enabled: false
     size: 1Gi
     accessMode: ReadWriteOnce
 
