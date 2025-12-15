@@ -1,0 +1,103 @@
+@startuml CinemaAbyss-ToBeArchitecture-C4Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма контейнеров системы "Кинобездна" (To-Be архитектура)
+
+Person(user, "Пользователь", "Смотрит фильмы, управляет подпиской")
+
+System_Boundary(cinemaabyss, "Система Кинобездна") {
+    
+    Container(spa, "Web/Mobile приложение", "React/React Native", "Предоставляет интерфейс для просмотра контента")
+    Container(apiGateway, "API Gateway (Proxy)", "Go/Node.js", "Единая точка входа, маршрутизация запросов, аутентификация")
+    
+    Container_Boundary(content_domain, "Content Domain") {
+        Container(moviesService, "Movies Service", "Go/Java", "Управление фильмами, метаданными, жанрами, актёрами, оценками")
+        ContainerDb(moviesDb, "Movies Database", "PostgreSQL", "Хранит данные о фильмах, жанрах, актёрах")
+    }
+    
+    Container_Boundary(user_domain, "User Domain") {
+        Container(userService, "User Service", "Go/Java", "Управление пользователями, профилями, аутентификацией")
+        ContainerDb(userDb, "User Database", "PostgreSQL", "Хранит данные пользователей")
+    }
+    
+    Container_Boundary(subscription_domain, "Subscription Domain") {
+        Container(subscriptionService, "Subscription Service", "Go/Java", "Управление подписками и тарифами")
+        Container(paymentService, "Payment Service", "Go/Java", "Обработка платежей")
+        ContainerDb(subscriptionDb, "Subscription Database", "PostgreSQL", "Хранит данные о подписках и платежах")
+    }
+    
+    Container_Boundary(recommendation_domain, "Recommendation Domain") {
+        Container(recommendationService, "Recommendation Service", "Python/Go", "Генерация персональных рекомендаций")
+        ContainerDb(recommendationDb, "Recommendation Database", "PostgreSQL/Redis", "Хранит данные для рекомендаций")
+    }
+    
+    Container_Boundary(streaming_domain, "Streaming Domain") {
+        Container(streamingService, "Streaming Service", "Go/Node.js", "Управление потоковым воспроизведением")
+        Container(cdn, "CDN/Storage", "S3/MinIO", "Хранение видеоконтента")
+    }
+    
+    Container_Boundary(events_domain, "Events Domain") {
+        Container(eventsService, "Events Service", "Go/Java", "Обработка событий, интеграция между доменами")
+        Container(messageBroker, "Message Broker", "Kafka", "Асинхронная передача сообщений между сервисами")
+    }
+    
+    ContainerDb(sharedCache, "Shared Cache", "Redis", "Кэширование данных для повышения производительности")
+}
+
+System_Ext(paymentGateway, "Платёжная система", "Внешний платёжный шлюз")
+System_Ext(externalContent, "Внешние источники контента", "Интеграция с другими стриминговыми сервисами")
+
+' Взаимодействие пользователя
+Rel(user, spa, "Использует", "HTTPS")
+Rel(spa, apiGateway, "Вызывает API", "HTTPS/REST")
+
+' API Gateway маршрутизация
+Rel(apiGateway, moviesService, "Маршрутизирует запросы", "HTTP/gRPC")
+Rel(apiGateway, userService, "Маршрутизирует запросы", "HTTP/gRPC")
+Rel(apiGateway, subscriptionService, "Маршрутизирует запросы", "HTTP/gRPC")
+Rel(apiGateway, recommendationService, "Маршрутизирует запросы", "HTTP/gRPC")
+Rel(apiGateway, streamingService, "Маршрутизирует запросы", "HTTP/gRPC")
+Rel(apiGateway, eventsService, "Маршрутизирует запросы", "HTTP/gRPC")
+
+' Content Domain
+Rel(moviesService, moviesDb, "Читает/пишет", "SQL")
+Rel(moviesService, sharedCache, "Кэширует", "Redis Protocol")
+Rel(moviesService, messageBroker, "Публикует события", "Kafka Protocol")
+
+' User Domain
+Rel(userService, userDb, "Читает/пишет", "SQL")
+Rel(userService, sharedCache, "Кэширует", "Redis Protocol")
+Rel(userService, messageBroker, "Публикует события", "Kafka Protocol")
+
+' Subscription Domain
+Rel(subscriptionService, subscriptionDb, "Читает/пишет", "SQL")
+Rel(subscriptionService, messageBroker, "Публикует события", "Kafka Protocol")
+Rel(paymentService, subscriptionDb, "Читает/пишет", "SQL")
+Rel(paymentService, paymentGateway, "Обрабатывает платежи", "HTTPS/REST")
+Rel(paymentService, messageBroker, "Публикует события", "Kafka Protocol")
+
+' Recommendation Domain
+Rel(recommendationService, recommendationDb, "Читает/пишет", "SQL/Redis")
+Rel(recommendationService, messageBroker, "Подписан на события", "Kafka Protocol")
+Rel(recommendationService, moviesService, "Получает данные о фильмах", "HTTP/gRPC")
+Rel(recommendationService, userService, "Получает данные о пользователях", "HTTP/gRPC")
+
+' Streaming Domain
+Rel(streamingService, cdn, "Получает видео", "S3 API")
+Rel(streamingService, messageBroker, "Публикует события просмотра", "Kafka Protocol")
+Rel(streamingService, subscriptionService, "Проверяет подписку", "HTTP/gRPC")
+
+' Events Domain
+Rel(eventsService, messageBroker, "Читает/пишет события", "Kafka Protocol")
+Rel(messageBroker, moviesService, "Доставляет события", "Kafka Protocol")
+Rel(messageBroker, userService, "Доставляет события", "Kafka Protocol")
+Rel(messageBroker, recommendationService, "Доставляет события", "Kafka Protocol")
+
+' Внешние интеграции
+Rel(moviesService, externalContent, "Получает контент", "HTTPS/REST")
+
+SHOW_LEGEND()
+
+@enduml
