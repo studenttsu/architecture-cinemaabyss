@@ -25,7 +25,7 @@ database:
       cpu: 500m
       memory: 512Mi
   persistence:
-    enabled: false
+    enabled: true
     size: 10Gi
     accessMode: ReadWriteOnce
 
@@ -125,7 +125,7 @@ kafka:
       cpu: 200m
       memory: 512Mi
   persistence:
-    enabled: false
+    enabled: true
     size: 5Gi
     accessMode: ReadWriteOnce
   topics:
@@ -155,7 +155,7 @@ zookeeper:
       cpu: 100m
       memory: 256Mi
   persistence:
-    enabled: false
+    enabled: true
     size: 1Gi
     accessMode: ReadWriteOnce
 
